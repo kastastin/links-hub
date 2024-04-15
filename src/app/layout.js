@@ -1,4 +1,6 @@
 import { Nunito } from "next/font/google";
+
+import { Header } from "@/components/Header";
 import "./globals.css";
 
 const fontFamily = Nunito({ subsets: ["latin"] });
@@ -12,7 +14,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
 	return (
 		<html lang="en">
-			<body className={fontFamily.className}>{children}</body>
+			<body className={fontFamily.className}>
+				<Header />
+				<main className="px-10">{children}</main>
+			</body>
 		</html>
 	);
 }
