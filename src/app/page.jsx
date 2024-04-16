@@ -1,6 +1,11 @@
+import { getServerSession } from "next-auth";
+
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { HeroForm } from "@/components/forms/HeroForm";
 
-export default function HomePage() {
+export default async function HomePage() {
+	const session = await getServerSession(authOptions);
+
 	return (
 		<section className="pt-32">
 			<div className="mb-6 max-w-[530px]">
@@ -14,7 +19,7 @@ export default function HomePage() {
 				</p>
 			</div>
 
-			<HeroForm />
+			<HeroForm user={session?.user} />
 		</section>
 	);
 }

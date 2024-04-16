@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
-export function HeroForm() {
+export function HeroForm({ user }) {
+	const router = useRouter();
+
 	useEffect(() => {
 		if (
 			"localStorage" in window &&
@@ -25,8 +27,13 @@ export function HeroForm() {
 
 		if (username.length === 0) return;
 
-		window.localStorage.setItem("desiredUsername", username);
-		await signIn("google");
+		// if user is already signed in, redirect
+		if (user) {
+			router.push(`/account?desiredUsername=${username}`);
+		} else {
+			window.localStorage.setItem("desiredUsername", username);
+			await signIn("google");
+		}
 	}
 
 	return (
