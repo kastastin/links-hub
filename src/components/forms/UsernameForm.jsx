@@ -17,7 +17,7 @@ export function UsernameForm({ desiredUsername }) {
 		setIsUsernameTaken(!result);
 
 		// redirect to /account/:username if the username is not taken
-		if (result) redirect(`/account/${formData.get("username")}`);
+		if (result) redirect(`/account?created=${formData.get("username")}`);
 	}
 
 	return (
