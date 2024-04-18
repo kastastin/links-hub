@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.radio-togglers {
+	@apply inline-flex gap-x-4 rounded-md border border-gray-300 bg-blue-50 p-3 px-4 shadow-inner;
+}
+
+.radio-togglers span {
+	@apply rounded-md bg-white px-4 py-2 font-medium shadow-md;
+}
+
+.radio-togglers input[type="radio"] {
+	@apply hidden;
+}
+
+.radio-togglers input[type="radio"]:checked + span {
+	@apply bg-[#F7961E] text-white;
+}
+
+.settings-form input[type="text"],
+.settings-form textarea {
+	@apply mr-2 w-full flex-1 rounded-md rounded-r-md border bg-white p-2 text-lg font-medium shadow-inner placeholder:text-gray-400;
+}
+
+.settings-form label {
+	@apply text-sm font-black pl-2 uppercase text-gray-400;
+}

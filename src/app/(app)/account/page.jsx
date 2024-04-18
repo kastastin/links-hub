@@ -5,6 +5,7 @@ import { Page } from "@/models/Page";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 import { UsernameForm } from "@/components/forms/UsernameForm";
+import { SettingsForm } from "@/components/forms/SettingsForm";
 
 export default async function AccountPage({ searchParams }) {
 	const session = await getServerSession(authOptions);
@@ -12,10 +13,17 @@ export default async function AccountPage({ searchParams }) {
 	const { desiredUsername } = searchParams;
 
 	mongoose.connect(process.env.MONGODB_URI);
+
 	const page = await Page.findOne({ owner: session?.user?.email });
 
 	if (page) {
-		return <div>your page: /{page.uri}</div>;
+		// Convert the Mongoose document to a plain object
+		const pageObject = page.toObject();
+
+		// Convert '_id' to a string
+		pageObject._id = pageObject._id.toString();
+
+		return <SettingsForm user={session?.user} page={pageObject} />;
 	}
 
 	return (
