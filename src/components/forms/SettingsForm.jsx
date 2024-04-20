@@ -8,7 +8,7 @@ import { savePageSettings } from "@/actions/pageActions";
 import { RadioTogglers } from "@/components/formItems/RadioTogglers";
 import { SubmitButton } from "@/components/buttons/SubmitButton";
 
-export function SettingsForm({ user, page }) {
+export function SettingsForm({ user, pageSettings }) {
 	async function saveBaseSettings(formData) {
 		const toastId = toast.loading("Saving settings...");
 
@@ -29,6 +29,7 @@ export function SettingsForm({ user, page }) {
 		<form action={saveBaseSettings} className="-m-4">
 			<div className="flex items-center justify-center rounded-t-md bg-gray-200 py-16">
 				<RadioTogglers
+					defaultValue={pageSettings.bgType || "color"}
 					options={[
 						{ label: "Color", value: "color", icon: <Palette /> },
 						{ label: "Image", value: "image", icon: <ImagePlus /> },
@@ -49,7 +50,7 @@ export function SettingsForm({ user, page }) {
 						id="nameInput"
 						type="text"
 						name="displayName"
-						defaultValue={page?.displayName}
+						defaultValue={pageSettings?.displayName}
 						placeholder="Walter White"
 					/>
 				</div>
@@ -61,7 +62,7 @@ export function SettingsForm({ user, page }) {
 						id="locationInput"
 						type="text"
 						name="location"
-						defaultValue={page?.location}
+						defaultValue={pageSettings?.location}
 						placeholder="Albuquerque, New Mexico"
 					/>
 				</div>
@@ -72,7 +73,7 @@ export function SettingsForm({ user, page }) {
 					<textarea
 						id="bioInput"
 						name="bio"
-						defaultValue={page?.bio}
+						defaultValue={pageSettings?.bio}
 						rows="2"
 						placeholder="Write something about yourself..."
 					/>

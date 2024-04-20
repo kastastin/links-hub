@@ -1,30 +1,28 @@
-import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 
-import { Page } from "@/models/Page";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-
+import { getPageSettings } from "@/actions/pageActions";
 import { UsernameForm } from "@/components/forms/UsernameForm";
 import { SettingsForm } from "@/components/forms/SettingsForm";
 
 export default async function AccountPage({ searchParams }) {
 	const session = await getServerSession(authOptions);
 
-	const { desiredUsername } = searchParams;
+	const pageSettings = await getPageSettings(session?.user?.email);
 
-	mongoose.connect(process.env.MONGODB_URI);
-
-	const page = await Page.findOne({ owner: session?.user?.email });
-
-	if (page) {
+	if (pageSettings) {
 		// Convert the Mongoose document to a plain object
-		const pageObject = page.toObject();
+		const pageSettingsObject = pageSettings.toObject();
 
 		// Convert '_id' to a string
-		pageObject._id = pageObject._id.toString();
+		pageSettingsObject._id = pageSettingsObject._id.toString();
 
-		return <SettingsForm user={session?.user} page={pageObject} />;
+		return (
+			<SettingsForm user={session?.user} pageSettings={pageSettingsObject} />
+		);
 	}
+
+	const { desiredUsername } = searchParams;
 
 	return (
 		<section className="pt-10">
