@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { Toaster } from "react-hot-toast";
 
+import { deleteImage } from "@/actions/deleteImage";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 
@@ -20,6 +21,7 @@ export default async function AppLayout({ children }) {
 	const session = await getServerSession(authOptions);
 
 	if (!session) return redirect("/");
+	deleteImage();
 
 	return (
 		<html lang="en">
