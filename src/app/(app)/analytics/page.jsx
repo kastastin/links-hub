@@ -1,7 +1,5 @@
+import { SectionBox } from "@/components/layout/SectionBox";
+
 export default function AnalyticsPage() {
-  return (
-    <div>
-      Analytics Page
-    </div>
-  )
+	return <SectionBox>Analytics Page</SectionBox>;
 }

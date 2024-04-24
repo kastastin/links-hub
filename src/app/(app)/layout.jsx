@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { Toaster } from "react-hot-toast";
 
-import { deleteImage } from "@/actions/deleteImage";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 
@@ -21,7 +20,6 @@ export default async function AppLayout({ children }) {
 	const session = await getServerSession(authOptions);
 
 	if (!session) return redirect("/");
-	deleteImage();
 
 	return (
 		<html lang="en">
@@ -30,11 +28,7 @@ export default async function AppLayout({ children }) {
 
 				<AppSidebar user={session?.user} />
 
-				<main className="grow overflow-y-auto">
-					<div className="m-6 rounded-md bg-blue-50 p-4 shadow-inner">
-						{children}
-					</div>
-				</main>
+				<main className="grow overflow-y-auto">{children}</main>
 			</body>
 		</html>
 	);

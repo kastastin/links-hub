@@ -10,7 +10,6 @@ const PageSchema = new Schema(
 		bgType: { type: String, default: "color" },
 		bgColor: { type: String, default: "#99EEC0" },
 		bgImage: { type: String, default: "" },
-		previewedBgImageLink: { type: String, default: "" },
 	},
 	{ timestamps: true },
 );

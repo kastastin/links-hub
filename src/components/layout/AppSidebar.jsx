@@ -11,10 +11,10 @@ export function AppSidebar({ user }) {
 	const path = usePathname();
 
 	return (
-		<aside className="flex w-48 flex-col bg-blue-50 p-4 shadow-inner sticky">
+		<aside className="sticky flex w-48 flex-col bg-blue-50 p-4 pt-6 shadow-inner">
 			{/* Avatar */}
 			<div className="relative mx-auto size-24 overflow-hidden rounded-full">
-				<Image src={user?.image} alt="Avatar" fill />
+				<Image src={user?.image} alt="Avatar" fill objectFit="cover" />
 			</div>
 
 			<div className="grow text-center">

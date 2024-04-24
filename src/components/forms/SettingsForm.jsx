@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
-import { Palette, ImagePlus, Save } from "lucide-react";
+import { Palette, ImagePlus, Save, SquarePen } from "lucide-react";
 
 import { savePageSettings } from "@/actions/pageActions";
 import { RadioTogglers } from "@/components/formItems/RadioTogglers";
@@ -13,6 +13,7 @@ export function SettingsForm({ user, pageSettings }) {
 	const [bgType, setBgType] = useState(pageSettings.bgType);
 	const [bgColor, setBgColor] = useState(pageSettings.bgColor);
 	const [bgImage, setBgImage] = useState(pageSettings.bgImage);
+	const [avatar, setAvatar] = useState(user?.image);
 
 	async function saveBaseSettings(formData) {
 		const toastId = toast.loading("Saving settings...");
@@ -30,7 +31,7 @@ export function SettingsForm({ user, pageSettings }) {
 		}
 	}
 
-	async function handleFileChange(e) {
+	async function upload(e, callbackFn) {
 		const file = e.target.files?.[0];
 
 		const uploadPromise = new Promise((resolve, reject) => {
@@ -44,8 +45,8 @@ export function SettingsForm({ user, pageSettings }) {
 				if (!response.ok) reject();
 
 				response.json().then((link) => {
-					setBgImage(link);
-					resolve();
+					callbackFn(link);
+					resolve(link);
 				});
 			});
 		});
@@ -55,6 +56,14 @@ export function SettingsForm({ user, pageSettings }) {
 			success: "Image uploaded successfully!",
 			error: "Failed to upload image",
 		});
+	}
+
+	async function handleCoverImageChange(e) {
+		await upload(e, (link) => setBgImage(link));
+	}
+
+	async function handleAvatarImageChange(e) {
+		await upload(e, (link) => setAvatar(link));
 	}
 
 	return (
@@ -96,7 +105,7 @@ export function SettingsForm({ user, pageSettings }) {
 									<input
 										type="file"
 										className="hidden"
-										onChange={handleFileChange}
+										onChange={handleCoverImageChange}
 									/>
 								</label>
 							</div>
@@ -106,8 +115,33 @@ export function SettingsForm({ user, pageSettings }) {
 			</div>
 
 			{/* Avatar */}
-			<div className="relative -top-8 mx-auto -mb-12 size-32 overflow-hidden rounded-full border-4 border-white shadow-xl shadow-black/20">
-				<Image src={user?.image} alt="Avatar" fill />
+			<div className="relative">
+				<div className="relative -top-10 mx-auto -mb-12 size-32 overflow-hidden rounded-full border-4 border-white shadow-xl shadow-black/20">
+					<Image
+						src={avatar}
+						alt="Avatar"
+						fill
+						objectFit="cover"
+						className="aspect-square"
+					/>
+				</div>
+
+				<div className="relative -top-[120px] mx-auto -mb-12 size-32">
+					{/* Change icon */}
+					<label
+						htmlFor="avatarInput"
+						className="absolute bottom-0 right-0 cursor-pointer rounded-full border border-gray-200 bg-white p-2 shadow-inner"
+					>
+						<SquarePen className="size-5 text-gray-600" />
+					</label>
+					<input
+						id="avatarInput"
+						type="file"
+						className="hidden"
+						onChange={handleAvatarImageChange}
+					/>
+					<input type="hidden" name="avatar" value={avatar} />
+				</div>
 			</div>
 
 			<div className="settings-form mx-auto max-w-96 space-y-4 p-4 pb-1">

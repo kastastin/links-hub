@@ -1,9 +1,11 @@
 import { getServerSession } from "next-auth";
 
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getPageSettings } from "@/actions/pageActions";
-import { UsernameForm } from "@/components/forms/UsernameForm";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
+import { SectionBox } from "@/components/layout/SectionBox";
 import { SettingsForm } from "@/components/forms/SettingsForm";
+import { UsernameForm } from "@/components/forms/UsernameForm";
 
 export default async function AccountPage({ searchParams }) {
 	const session = await getServerSession(authOptions);
@@ -18,7 +20,14 @@ export default async function AccountPage({ searchParams }) {
 		pageSettingsObject._id = pageSettingsObject._id.toString();
 
 		return (
-			<SettingsForm user={session?.user} pageSettings={pageSettingsObject} />
+			<>
+				<SectionBox>
+					<SettingsForm
+						user={session?.user}
+						pageSettings={pageSettingsObject}
+					/>
+				</SectionBox>
+			</>
 		);
 	}
 

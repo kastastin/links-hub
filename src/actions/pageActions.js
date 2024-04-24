@@ -1,12 +1,12 @@
 "use server";
 
-import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
+import { getServerSession } from "next-auth";
 import mongoose from "mongoose";
 
+import { User } from "@/models/User";
 import { Page } from "@/models/Page";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { deleteImage } from "@/actions/deleteImage";
 
 export async function getPageSettings(email) {
 	mongoose.connect(process.env.MONGODB_URI);
@@ -39,56 +39,18 @@ export async function savePageSettings(formData) {
 		}
 	}
 
-	const existingBgImageLink = await getBgImageLink();
-	if (existingBgImageLink) {
-		await deleteImage(existingBgImageLink.split("/").pop());
+	await Page.updateOne({ owner: session?.user?.email }, dataToUpdate);
+
+	if (formData.has("avatar")) {
+		const avatarLink = formData.get("avatar");
+
+		await User.updateOne(
+			{ email: session?.user?.email },
+			{ image: avatarLink },
+		);
 	}
 
-	await Page.updateOne({ owner: session?.user?.email }, dataToUpdate);
-	await updatePreviewedBgImageLink("");
-
-	if (!session) return false;
-
 	revalidatePath("/account");
-
-	return true;
-}
-
-export async function getBgImageLink() {
-	mongoose.connect(process.env.MONGODB_URI);
-
-	const session = await getServerSession(authOptions);
-
-	if (!session) return false;
-
-	const link = await Page.findOne({ owner: session?.user?.email });
-
-	return link?.bgImage;
-}
-
-export async function getPreviewedBgImageLink() {
-	mongoose.connect(process.env.MONGODB_URI);
-
-	const session = await getServerSession(authOptions);
-
-	if (!session) return false;
-
-	const link = await Page.findOne({ owner: session?.user?.email });
-
-	return link?.previewedBgImageLink;
-}
-
-export async function updatePreviewedBgImageLink(value) {
-	mongoose.connect(process.env.MONGODB_URI);
-
-	const session = await getServerSession(authOptions);
-
-	if (!session) return false;
-
-	await Page.updateOne(
-		{ owner: session?.user?.email },
-		{ previewedBgImageLink: value },
-	);
 
 	return true;
 }

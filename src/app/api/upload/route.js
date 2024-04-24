@@ -1,15 +1,5 @@
-import {
-	S3Client,
-	PutObjectCommand,
-	DeleteObjectCommand,
-} from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import uniqid from "uniqid";
-
-import {
-	getPreviewedBgImageLink,
-	updatePreviewedBgImageLink,
-} from "@/actions/pageActions";
-import { deleteImage } from "@/actions/deleteImage";
 
 export async function POST(req) {
 	const formData = await req.formData();
@@ -24,8 +14,6 @@ export async function POST(req) {
 	});
 
 	const file = formData.get("file");
-	const previewedBgImageLink = await getPreviewedBgImageLink();
-
 	const randomId = uniqid();
 	const extension = file.name.split(".").pop();
 	const newFileName = `${randomId}.${extension}`;
@@ -44,10 +32,6 @@ export async function POST(req) {
 			Body: Buffer.concat(chunks),
 		}),
 	);
-
-	if (previewedBgImageLink) await deleteImage();
-
-	await updatePreviewedBgImageLink(newFileName);
 
 	const link = `https://${bucketName}.s3.amazonaws.com/${newFileName}`;
 
